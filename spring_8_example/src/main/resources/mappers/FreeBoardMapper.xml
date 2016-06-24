@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="FreeBoardMapper">
+ 	<update id="replyUpdate">
+ 		<![CDATA[
+ 		update freeboard set step=step+1
+ 		where ref=#{ref} and step>#{step}
+ 		]]>
+ 	</update>
+ 	<insert id="reply">
+ 		insert into freeboard values (
+ 		free_seq.nextval, #{id}, #{title}, #{contents},
+ 		0, #{ref}, #{step}+1, #{depth}+1, sysdate
+ 		)
+ 		
+ 	</insert>
+ 	<insert id="write">
+ 		insert into freeboard values
+ 		(free_seq.nextval, #{id}, #{title}, #{contents},
+ 		0, free_seq.currval, 0, 0, sysdate)
+ 	</insert>
+ 	<update id="mod">
+ 		update freeboard set title=#{title}, contents=#{contents}
+ 		where num=#{num}
+ 	</update>
+ 	<delete id="del">
+ 		delete freeboard where num=#{num}
+ 	</delete>
+ 	<select id="view" resultType="com.choa.Board.free.FreeBoardDTO">
+ 		select * from freeboard where num=#{num}
+ 	</select>
+ 	<select id="list" resultType="com.choa.Board.free.FreeBoardDTO">
+ 		select * from 
+ 		(select rownum R, A.* from
+ 		(select * from freeboard order by num desc) A)
+ 		where R between #{startRow} and #{lastRow}
+ 	</select>
+ 	<select id="count" resultType="java.lang.Integer">
+ 		select count(num) from freeboard
+ 	</select>
+ </mapper>

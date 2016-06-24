@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="QnaMapper">
+ 	<update id="replyUpdate">
+ 		<![CDATA[
+ 		update qna_board set step=step+1
+ 		where ref=#{ref} and step>#{step}
+ 		]]>
+ 	</update>
+ 	<insert id="reply">
+ 		insert into qna_board values (
+ 		qna_seq.nextval, #{id}, #{title}, #{contents},
+ 		0, #{ref}, #{step}+1, #{depth}+1, sysdate
+ 		)
+ 		
+ 	</insert>
+ 	<insert id="write">
+ 		insert into qna_board values
+ 		(qna_seq.nextval, #{id}, #{title}, #{contents},
+ 		0, qna_seq.currval, 0, 0, sysdate)
+ 	</insert>
+ 	<update id="mod">
+ 		update qna_board set title=#{title}, contents=#{contents}
+ 		where num=#{num}
+ 	</update>
+ 	<delete id="del">
+ 		delete qna_board where num=#{num}
+ 	</delete>
+ 	<select id="view" resultType="com.choa.Board.qna.QnaBoardDTO">
+ 		select * from qna_board where num=#{num}
+ 	</select>
+ 	<select id="list" resultType="com.choa.Board.qna.QnaBoardDTO">
+ 		select * from 
+ 		(select rownum R, A.* from
+ 		(select * from qna_board order by ref desc, step asc) A)
+ 		where R between 1 and 10
+ 	</select>
+ 	<select id="count" resultType="java.lang.Integer">
+ 		select count(num) from qna_board
+ 	</select>
+ </mapper>

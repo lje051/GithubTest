@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="FreeboardReplyMapper">
+ 	<insert id="replyWrite" >
+ 		insert into replyboard 
+ 		values(reply_seq.nextVal,#{num},#{rid},#{rContents},#{r_date})
+ 	</insert>
+ 	
+ 	<select id="replyList" resultType="com.choa.Board.reply.FreeboardReplyDTO">
+ 		select * from (select rownum R, A.* from
+ 		(select * from replyboard where num=#{num} order by rnum desc)A)
+ 		where R between #{map.startRow} and #{map.lastRow}
+ 	</select>
+ 	
+ 	
+ </mapper>
